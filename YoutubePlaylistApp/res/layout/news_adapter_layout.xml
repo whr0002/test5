@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dip" >
+
+        <RelativeLayout
+            android:id="@+id/news_layout"
+            android:layout_width="250dip"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/news_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dip"
+                android:layout_marginLeft="5dip"
+                android:text="This is news title"
+                android:textSize="16sp" 
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/date_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dip"
+            android:layout_alignParentRight="true" >
+            
+            <TextView 
+                android:id="@+id/mydate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+                android:text="10 hours ago"
+                android:textSize="12sp"
+                />
+            
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
