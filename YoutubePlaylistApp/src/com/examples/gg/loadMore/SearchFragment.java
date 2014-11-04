@@ -5,8 +5,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -14,15 +19,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.examples.gg.adapters.ListViewAdapter;
+import com.examples.gg.data.CustomSearchView;
 import com.examples.gg.data.MyAsyncTask;
 import com.examples.gg.feedManagers.FeedManager_Base_v3;
 import com.examples.gg.feedManagers.FeedManager_Suggestion;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.rs.playlist2.R;
 
-public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
-		implements SearchView.OnQueryTextListener, ListView.OnItemClickListener {
+public class SearchFragment extends LoadMore_Base implements
+		SearchView.OnQueryTextListener, ListView.OnItemClickListener {
 
 	private int mediaType;
 	private int sortType;
@@ -36,16 +47,19 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 	private ListViewAdapter suggestedListAdapter;
 	private ArrayList<String> suggestedKeywords;
 	private GetSuggestedWordsTask mTask;
+	private FeedManager_Suggestion mFeedManager;
 
 	private Spinner spin1;
 	private Spinner spin2;
 
 	private HashMap<String, String> queryHash;
-	private final String[] catagory = { "Playlists", "Videos", "Channels" };
+	private final String[] catagory = { "Videos", "Channels", "Playlists" };
 	private final String[] sort = { "Relevance", "Date", "Rating", "Title",
 			"View count", "Video count" };
-	private FeedManager_Suggestion mFeedManager;
-	
+	private String playlistAPI;
+	private String queryHint;
+	private CustomSearchView searchView;
+
 	@Override
 	public void Initializing() {
 		// Give a title for the action bar
@@ -54,9 +68,9 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		ab.setTitle(abTitle);
 
 		// Get the query
-		Intent i = getIntent();
-		mQuery = i.getStringExtra("query");
-		curQuery = mQuery;
+		// Intent i = getIntent();
+		// mQuery = i.getStringExtra("query");
+		curQuery = "";
 		// Log.i("debug", mQuery);
 
 		mediaType = 0;
@@ -100,44 +114,51 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 				queryHash.get(catagory[mediaType]), playlistAPI, browserKey,
 				gv, numOfResults);
 
-		// No header view in the list
-		hasHeader = false;
-
 		// set text in search field
-		queryHint = "Search";
+		queryHint = "Search Youtube";
 
 		// Default search type is 0 (Playlist)
 		// 2 (Channel)
 		// 1 (video)
 
-		setDropdown();
+//		setDropdown();
 
 		// Pass results to ListViewAdapter Class
 		suggestedKeywords = new ArrayList<String>();
-
-		suggestedList = (ListView) this.findViewById(R.id.suggested_listview);
-		suggestedList.setAdapter(suggestedListAdapter);
-		suggestedList.setOnItemClickListener(this);
-
+		setHasOptionsMenu(true);
 		setOptionMenu(true, true);
 
 	}
 
-	public void setDropdown() {
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.add(0, 20, 0, "Search")
+				.setIcon(R.drawable.abs__ic_search)
+				.setActionView(searchView)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_IF_ROOM
+								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
-		// ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		//
-		// final String[] catagory = { "Playlist", "Video", "Channel" };
-		//
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-		// ab.getThemedContext(), R.layout.sherlock_spinner_item,
-		// android.R.id.text1, catagory);
-		//
-		// adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-		//
-		// ab.setListNavigationCallbacks(adapter, this);
-		//
-		// ab.setSelectedNavigationItem(currentPosition);
+		menu.add(0, 0, 0, "Refresh").setIcon(R.drawable.ic_refresh)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		suggestedList = (ListView) sfa.findViewById(R.id.suggested_listview);
+		if (suggestedList != null) {
+			suggestedList.setOnItemClickListener(this);
+			searchView = new CustomSearchView(sfa.getSupportActionBar()
+					.getThemedContext());
+			searchView.setListView(suggestedList);
+		}
+
+	}
+
+	@Override
+	public void setDropdown() {
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				ab.getThemedContext(), R.layout.sherlock_spinner_item,
@@ -155,8 +176,8 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		// ab.setDisplayUseLogoEnabled(false);
 		// ab.setDisplayShowHomeEnabled(false);
 
-		spin1 = (Spinner) findViewById(R.id.spinner1);
-		spin2 = (Spinner) findViewById(R.id.spinner2);
+		spin1 = (Spinner) sfa.findViewById(R.id.spinner1);
+		spin2 = (Spinner) sfa.findViewById(R.id.spinner2);
 
 		spin1.setAdapter(adapter);
 		spin2.setAdapter(adapter2);
@@ -171,7 +192,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 				}
 
 				mediaType = itemPosition;
-				refreshActivity();
+				refreshFragment();
 
 			}
 
@@ -190,7 +211,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 				}
 
 				sortType = itemPosition;
-				refreshActivity();
+				refreshFragment();
 
 			}
 
@@ -202,7 +223,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 	}
 
 	@Override
-	public void refreshActivity() {
+	public void refreshFragment() {
 
 		try {
 			playlistAPI = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order="
@@ -214,9 +235,14 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		redoRequest(playlistAPI,
-				new FeedManager_Base_v3(queryHash.get(catagory[mediaType]),
-						playlistAPI, browserKey, gv, numOfResults));
+		API.set(0, playlistAPI);
+		feedManager = new FeedManager_Base_v3(
+				queryHash.get(catagory[mediaType]), playlistAPI, browserKey,
+				gv, numOfResults);
+		super.refreshFragment();
+		// redoRequest(playlistAPI,
+		// new FeedManager_Base_v3(queryHash.get(catagory[mediaType]),
+		// playlistAPI, browserKey, gv, numOfResults));
 
 	}
 
@@ -249,8 +275,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 				case 1:
 					// Search videos, type 1
-					Intent i = new Intent(mContext,
-							YoutubeActionBarActivity.class);
+					Intent i = new Intent(sfa, YoutubeActionBarActivity.class);
 					i.putExtra("video", videolist.get(position));
 					i.putExtra("videoId", videolist.get(position).getVideoId());
 					// i.putExtra("isfullscreen", true);
@@ -278,53 +303,6 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
-		// User clicks a search keyword
-		// searchView.setQuery(suggestedKeywords.get(index), true);
-		// isSelected = true;
-		onQueryTextSubmit(suggestedKeywords.get(index));
-	}
-
-	@Override
-	public boolean onQueryTextSubmit(String query) {
-		// Hide the listview when submit
-		// suggestedList.setVisibility(View.GONE);
-		isSelected = true;
-		curQuery = query;
-		LoadMore_Base.hideSoftKeyboard(this);
-		refreshActivity();
-		return true;
-	}
-
-	@Override
-	public boolean onQueryTextChange(String newText) {
-		if (curQuery.equals(newText))
-			return true;
-
-		// Get suggestion from google
-		if (newText != null && newText.length() > 0) {
-
-			mTask = new GetSuggestedWordsTask();
-			String fullAPI = "";
-			try {
-				fullAPI = suggestionBaseAPI
-						+ URLEncoder.encode(newText, "UTF-8") + "&key="
-						+ browserKey;
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			mTask.execute(fullAPI);
-
-		} else {
-			suggestedList.setVisibility(View.GONE);
-		}
-
-		return true;
-	}
-	
 	public class GetSuggestedWordsTask extends MyAsyncTask {
 
 		@Override
@@ -356,7 +334,6 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 						// Binds the Adapter to the ListView
 						suggestedList.setAdapter(suggestedListAdapter);
 						suggestedListAdapter.notifyDataSetChanged();
-						searchView.setListView(suggestedList);
 					}
 					// Log.d("debug", "size: "+suggestedListAdapter.getCount());
 				} else {
@@ -369,6 +346,67 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 		}
 
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
+		// User clicks a search keyword
+		// searchView.setQuery(suggestedKeywords.get(index), true);
+		// isSelected = true;
+		onQueryTextSubmit(suggestedKeywords.get(index));
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		// Hide the listview when submit
+		// suggestedList.setVisibility(View.GONE);
+		isSelected = true;
+		curQuery = query;
+		SearchFragment.hideSoftKeyboard(sfa);
+		refreshFragment();
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+//		if (curQuery.equals(newText))
+//			return true;
+
+		// Get suggestion from google
+		if (newText != null && newText.length() > 0) {
+
+			mTask = new GetSuggestedWordsTask();
+			String fullAPI = "";
+			try {
+				fullAPI = suggestionBaseAPI
+						+ URLEncoder.encode(newText, "UTF-8") + "&key="
+						+ browserKey;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			mTask.execute(fullAPI);
+
+		} else {
+			suggestedList.setVisibility(View.GONE);
+		}
+
+		return true;
+	}
+
+	public static void hideSoftKeyboard(Activity context) {
+		InputMethodManager imm = (InputMethodManager) context
+				.getSystemService(context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+
+	}
+	
+	@Override
+	public void onDestroy() {
+		ab.setDisplayShowCustomEnabled(false);
+		
+		super.onDestroy();
 	}
 	// @Override
 	// public void onConfigurationChanged(Configuration newConfig) {

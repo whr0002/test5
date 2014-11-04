@@ -1,9 +1,12 @@
 package com.examples.gg.loadMore;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
@@ -15,11 +18,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -27,12 +32,16 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.costum.android.widget.LoadMoreListView;
 import com.examples.gg.adapters.EndlessScrollListener;
+import com.examples.gg.adapters.ListViewAdapter;
 import com.examples.gg.adapters.VideoArrayAdapter;
+import com.examples.gg.data.CustomSearchView;
 import com.examples.gg.data.MyAsyncTask;
 import com.examples.gg.data.Video;
 import com.examples.gg.feedManagers.FeedManager_Base;
+import com.examples.gg.feedManagers.FeedManager_Suggestion;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,7 +49,7 @@ import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.rs.playlist2.R;
 
 public class LoadMore_Base extends SherlockFragment implements
-		ActionBar.OnNavigationListener {
+		ActionBar.OnNavigationListener, SearchView.OnQueryTextListener, ListView.OnItemClickListener{
 	protected LoadMoreListView myLoadMoreListView;
 	protected ArrayList<String> titles;
 	protected ArrayList<Video> videolist;
@@ -76,6 +85,16 @@ public class LoadMore_Base extends SherlockFragment implements
 	protected GridView gv;
 	protected String numOfResults;
 	protected String browserKey;
+	protected CustomSearchView searchView;
+	
+	private boolean isSelected = false;
+	private ListView suggestedList;
+	private ListViewAdapter suggestedListAdapter;
+	private ArrayList<String> suggestedKeywords;
+	private GetSuggestedWordsTask mTask;
+	private FeedManager_Suggestion mFeedManager;
+	private final String suggestionBaseAPI = "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&q=";
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -97,9 +116,6 @@ public class LoadMore_Base extends SherlockFragment implements
 
 		// set the layout
 		view = inflater.inflate(R.layout.loadmore_list, null);
-		
-
-
 
 		// Initial fragment manager
 		fm = sfa.getSupportFragmentManager();
@@ -142,6 +158,8 @@ public class LoadMore_Base extends SherlockFragment implements
 
 		mActionBar = sfa.getSupportActionBar();
 		setDropdown();
+		
+
 
 		return view;
 
@@ -153,8 +171,8 @@ public class LoadMore_Base extends SherlockFragment implements
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent i = new Intent(sfa,
 						YoutubeActionBarActivity.class);
-				i.putExtra("videoId", videolist.get(position).getVideoId());
-				i.putExtra("isfullscreen", true);
+				i.putExtra("video", videolist.get(position));
+//				i.putExtra("isfullscreen", true);
 				startActivity(i);
 			}
 		});
@@ -264,16 +282,31 @@ public class LoadMore_Base extends SherlockFragment implements
 		    .build();
 			adView.loadAd(adRequest);
 		}
+		
+		suggestedKeywords = new ArrayList<String>();
+		suggestedList = (ListView) sfa.findViewById(R.id.suggested_listview);
+		suggestedList.setOnItemClickListener(this);
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-		if (hasRefresh)
-			menu.add(0, 0, 0, "")
-					.setIcon(R.drawable.ic_refresh)
-					.setShowAsAction(
-							MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		searchView = new CustomSearchView(sfa.getSupportActionBar()
+				.getThemedContext());
+		searchView.setQueryHint("Search Youtube");
+		searchView.setOnQueryTextListener(this);
+
+		menu.add(0, 20, 0, "Search")
+				.setIcon(R.drawable.abs__ic_search)
+				.setActionView(searchView)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_IF_ROOM
+								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+//		if (hasRefresh)
+//			menu.add(0, 0, 0, "")
+//					.setIcon(R.drawable.ic_refresh)
+//					.setShowAsAction(
+//							MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 	}
 
@@ -390,7 +423,9 @@ public class LoadMore_Base extends SherlockFragment implements
 
 				}
 				vaa.notifyDataSetChanged();
-
+				
+				// Hide search listview
+				suggestedList.setVisibility(View.GONE);
 				// Call onLoadMoreComplete when the LoadMore task, has
 				// finished
 //				((LoadMoreListView) myLoadMoreListView).onLoadMoreComplete();
@@ -547,5 +582,101 @@ public class LoadMore_Base extends SherlockFragment implements
 //			myLoadMoreListView.addHeaderView(header, null, false);
 //
 //		}
+	}
+	
+	public static void hideSoftKeyboard(Activity context) {
+		InputMethodManager imm = (InputMethodManager) context
+				.getSystemService(context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
+		// TODO Auto-generated method stub
+		onQueryTextSubmit(suggestedKeywords.get(index));
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		// starting search activity
+		Intent intent = new Intent(sfa, LoadMore_Activity_Search_Youtube.class);
+		intent.putExtra("query", query);
+		startActivity(intent);
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+//		if (curQuery.equals(newText))
+//			return true;
+
+		// Get suggestion from google
+		if (newText != null && newText.length() > 0) {
+
+			mTask = new GetSuggestedWordsTask();
+			String fullAPI = "";
+			try {
+				fullAPI = suggestionBaseAPI
+						+ URLEncoder.encode(newText, "UTF-8") + "&key="
+						+ browserKey;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			mTask.execute(fullAPI);
+
+		} else {
+			suggestedList.setVisibility(View.GONE);
+		}
+
+		return true;
+	}
+	
+	public class GetSuggestedWordsTask extends MyAsyncTask {
+
+		@Override
+		protected void onPostExecute(String result) {
+			// result = "{\"feed\":"+result+"}";
+			// Log.d("debug", result);
+			if (!taskCancel && result != null) {
+				// Do anything with response..
+				try {
+					suggestedKeywords.clear();
+					mFeedManager = new FeedManager_Suggestion();
+					mFeedManager.setmJSON(result);
+					suggestedKeywords = mFeedManager.getSuggestionList();
+					// Log.d("debug", "size s: "+suggestedKeywords.size());
+				} catch (Exception e) {
+
+				}
+
+				if (suggestedKeywords != null && !suggestedKeywords.isEmpty()) {
+					// Show suggestion list
+					if (suggestedList.getVisibility() == View.VISIBLE
+							&& isSelected) {
+						suggestedList.setVisibility(View.GONE);
+						isSelected = false;
+					} else {
+						suggestedList.setVisibility(View.VISIBLE);
+						suggestedListAdapter = new ListViewAdapter(sfa,
+								suggestedKeywords);
+						// Binds the Adapter to the ListView
+						suggestedList.setAdapter(suggestedListAdapter);
+						suggestedListAdapter.notifyDataSetChanged();
+						searchView.setListView(suggestedList);
+					}
+					// Log.d("debug", "size: "+suggestedListAdapter.getCount());
+				} else {
+					// Binds the Adapter to the ListView
+					suggestedList.setAdapter(null);
+					suggestedList.setVisibility(View.GONE);
+				}
+
+			}
+
+		}
+
 	}
 }

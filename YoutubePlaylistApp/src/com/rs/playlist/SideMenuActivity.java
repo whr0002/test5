@@ -31,6 +31,7 @@ import com.examples.gg.data.Item;
 import com.examples.gg.data.SectionItem;
 import com.examples.gg.loadMore.FavoritesFragment;
 import com.examples.gg.loadMore.PlaylistFragment;
+import com.examples.gg.loadMore.SearchFragment;
 import com.examples.gg.settings.SettingsActivity;
 import com.rs.playlist2.R;
 
@@ -98,6 +99,7 @@ public class SideMenuActivity extends SherlockFragmentActivity {
 
 		// Favorites
 		items.add(new SectionItem("My Youtube"));
+//		items.add(new EntryItem("Search", "Videos, channels, Playlists", R.drawable.abs__ic_search));
 		items.add(new EntryItem("Favorites", "Things I like", R.drawable.medal));
 		items.add(new EntryItem("Subscriptions", "Local subscriptions",
 				R.drawable.upcoming));
@@ -164,7 +166,7 @@ public class SideMenuActivity extends SherlockFragmentActivity {
 
 		}
 		// isFirstTimeUser();
-		openDrawerOnStart();
+//		openDrawerOnStart();
 		this.validatingTips(this);
 
 	}
@@ -294,8 +296,8 @@ public class SideMenuActivity extends SherlockFragmentActivity {
 		// Section divider case 0------------------------
 		case 1:
 			// News
-//			ft.replace(R.id.content_frame, new PlaylistFragment("Youtube Mix",
-//					"MCUS"));
+			ft.replace(R.id.content_frame, new PlaylistFragment("Youtube Mix",
+					"MCUS"));
 			break;
 		// Section divider case 2------------------------
 		case 3:
@@ -304,37 +306,37 @@ public class SideMenuActivity extends SherlockFragmentActivity {
 
 		case 4:
 //			ft.replace(R.id.content_frame, new SubscriptionFragment());
-//			break;
-//		case 5:
+			break;
+		case 5:
 //			ft.replace(R.id.content_frame, new HistoryFragment());
-//			break;
-//
-//		// Section divider case 6------------------------
-//
-//		case 7:
-//			ft.replace(R.id.content_frame, new PlaylistFragment("Rihanna",
-//					"PL59B464DFF08AEE66"));
-//			break;
-//		case 8:
-//			ft.replace(R.id.content_frame, new PlaylistFragment(
-//					"One Direction", "PLy5C65bvjyurvHyQdB8KtjB2M_HQixXlA"));
-//			break;
-//		case 9:
-//			ft.replace(R.id.content_frame, new PlaylistFragment("Katy Perry",
-//					"PLwn8mT6-a4yL8IUoORhtMDH6bsdv8en80"));
-//			break;
-//		case 10:
-//			ft.replace(R.id.content_frame, new PlaylistFragment(
-//					"Justin Bieber", "PL623E00CA581C3D83"));
-//			break;
-//		case 11:
-//			ft.replace(R.id.content_frame, new PlaylistFragment("Taylor Swift",
-//					"PLdnEKz0ib5DD8X0JeJ9MgbTLKNESWNlRe"));
-//			break;
-//		case 12:
-//			ft.replace(R.id.content_frame, new PlaylistFragment("Bruno Mars",
-//					"PL6A33993EF508A934"));
-//			break;
+			break;
+
+		// Section divider case 6------------------------
+
+		case 7:
+			ft.replace(R.id.content_frame, new PlaylistFragment("Rihanna",
+					"PL59B464DFF08AEE66"));
+			break;
+		case 8:
+			ft.replace(R.id.content_frame, new PlaylistFragment(
+					"One Direction", "PLy5C65bvjyurvHyQdB8KtjB2M_HQixXlA"));
+			break;
+		case 9:
+			ft.replace(R.id.content_frame, new PlaylistFragment("Katy Perry",
+					"PLwn8mT6-a4yL8IUoORhtMDH6bsdv8en80"));
+			break;
+		case 10:
+			ft.replace(R.id.content_frame, new PlaylistFragment(
+					"Justin Bieber", "PL623E00CA581C3D83"));
+			break;
+		case 11:
+			ft.replace(R.id.content_frame, new PlaylistFragment("Taylor Swift",
+					"PLdnEKz0ib5DD8X0JeJ9MgbTLKNESWNlRe"));
+			break;
+		case 12:
+			ft.replace(R.id.content_frame, new PlaylistFragment("Bruno Mars",
+					"PL6A33993EF508A934"));
+			break;
 
 		// Section divider case 12------------------------
 		case 14:

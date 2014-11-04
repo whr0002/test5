@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -38,6 +39,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.rs.playlist2.R;
+
 
 public class LoadMore_Activity_Base extends SherlockActivity {
 	protected LoadMoreListView myLoadMoreListView;
@@ -81,6 +83,9 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 	protected GridView gv;
 	protected Activity sfa;
 	protected String mPlaylistID;
+	protected String browserKey;
+	protected String numOfResults;
+	protected ListView suggestedList;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,8 +96,9 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 		sfa = this;
 		// Get loading view
 		fullscreenLoadingView = findViewById(R.id.fullscreen_loading_indicator);
-
-		
+		suggestedList = (ListView) findViewById(R.id.suggested_listview);
+		browserKey = this.getResources().getString(R.string.browserKey);
+		numOfResults = this.getResources().getString(R.string.numOfResults);
 		adView = (AdView) sfa.findViewById(R.id.ad);
 //		adView.setAdListener(new ToastAdListener(sfa));
 //		adView.loadAd(new AdRequest.Builder().build());
@@ -377,7 +383,7 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 
 				}
 				vaa.notifyDataSetChanged();
-
+				suggestedList.setVisibility(View.GONE);
 				// Call onLoadMoreComplete when the LoadMore task, has
 				// finished
 				// ((LoadMoreListView) myLoadMoreListView).onLoadMoreComplete();

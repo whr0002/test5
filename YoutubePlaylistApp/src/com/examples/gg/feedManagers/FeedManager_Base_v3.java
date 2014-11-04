@@ -1,5 +1,6 @@
 package com.examples.gg.feedManagers;
 
+
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -7,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.util.Log;
 import android.widget.GridView;
 
 import com.examples.gg.data.Video;
@@ -111,6 +113,7 @@ public class FeedManager_Base_v3 extends FeedManager_Base {
 			// ex.printStackTrace();
 		}
 
+		Log.d("debug", ""+videos.size());
 		return videos;
 	}
 	
