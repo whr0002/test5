@@ -100,7 +100,7 @@ public class FeedManager_Base_v3 extends FeedManager_Base {
 				videos.add(video);
 				// System.out.println(videoTitle+"***"+videoLink);
 
-				Log.d("debug", i+": "+videoId);
+//				Log.d("debug", i+": "+videoId);
 				ids += videoId + ",";
 				if(i == items.length()-1)
 					ids += videoId;
@@ -121,7 +121,7 @@ public class FeedManager_Base_v3 extends FeedManager_Base {
 			String s2 = (new StringBuilder(
 					"https://www.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&id="))
 					.append(ids).append("&key=").append(browserKey).toString();
-			Log.d("debug", s2);
+//			Log.d("debug", s2);
 			sTask.execute(new String[] { s2 });
 		} else {
 			if (mediaType.equals("video")) {
@@ -182,7 +182,7 @@ public class FeedManager_Base_v3 extends FeedManager_Base {
 			}
 			videos.get(i).setViewCount(viewCount + " videos");
 			videos.get(i).setAuthor(channelTitle);
-			Log.d("debug", viewCount);
+//			Log.d("debug", viewCount);
 		} catch (Exception exception) {
 		}
 		

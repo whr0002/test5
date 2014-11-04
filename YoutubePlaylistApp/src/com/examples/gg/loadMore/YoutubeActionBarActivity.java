@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
@@ -66,7 +67,8 @@ public class YoutubeActionBarActivity extends SherlockFragmentActivity
 	private ArrayList<Video> mVideoList;
 	private int mPositionOfList;
 	private String apiKey;
-	YouTubePlayer mYtp;
+	private YouTubePlayer mYtp;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +92,6 @@ public class YoutubeActionBarActivity extends SherlockFragmentActivity
 
 		} else {
 			video = intent.getParcelableExtra("video");
-
-			// videoId = intent.getStringExtra("videoId");
 			mPlaylistID = intent.getStringExtra("playlistID");
 			mVideoList = intent.getParcelableArrayListExtra("videoList");
 			mPositionOfList = intent.getIntExtra("positionOfList", 0);

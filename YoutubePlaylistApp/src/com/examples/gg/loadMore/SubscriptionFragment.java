@@ -2,6 +2,7 @@ package com.examples.gg.loadMore;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.annotation.TargetApi;
 import android.content.SharedPreferences;
@@ -168,6 +169,12 @@ public class SubscriptionFragment extends FavoritesFragment {
 		ArrayList<Video> monthList = eleminateVideos(4, vl);
 		ArrayList<Video> yearList = eleminateVideos(5, vl);
 
+//		Collections.shuffle(minuteList);
+//		Collections.shuffle(hourList);
+//		Collections.shuffle(dayList);
+//		Collections.shuffle(weekList);
+//		Collections.shuffle(monthList);
+//		Collections.shuffle(yearList);
 		// Adding sub list to full list
 		vl.clear();
 		vl.addAll(minuteList);

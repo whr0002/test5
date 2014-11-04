@@ -3,6 +3,7 @@ package com.examples.gg.loadMore;
 import java.util.Collections;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -82,6 +83,7 @@ public class PlaylistFragment extends LoadMore_Base {
 				// i.putExtra("isfullscreen", true);
 				// i.putExtra("videoId", videolist.get(position).getVideoId());
 				i.putExtra("video", videolist.get(position));
+				i.putExtra("videoDate", videolist.get(position).getUpdateTime());
 				i.putParcelableArrayListExtra("videoList", videolist);
 				i.putExtra("playlistID", mPlaylistID);
 				i.putExtra("positionOfList", position);
