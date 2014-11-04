@@ -1,6 +1,7 @@
 package com.examples.gg.loadMore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -17,11 +18,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -31,6 +34,7 @@ import com.examples.gg.adapters.VideoArrayAdapter;
 import com.examples.gg.data.MyAsyncTask;
 import com.examples.gg.data.Video;
 import com.examples.gg.feedManagers.FeedManager_Base;
+import com.examples.gg.feedManagers.FeedManager_Base_v3_PlaylistItem;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -40,8 +44,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.rs.playlist2.R;
 
-
-public class LoadMore_Activity_Base extends SherlockActivity {
+public class LoadMore_Activity_Base extends SherlockActivity implements OnNavigationListener {
 	protected LoadMoreListView myLoadMoreListView;
 	protected ArrayList<String> titles;
 	protected ArrayList<String> videos;
@@ -100,14 +103,13 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 		browserKey = this.getResources().getString(R.string.browserKey);
 		numOfResults = this.getResources().getString(R.string.numOfResults);
 		adView = (AdView) sfa.findViewById(R.id.ad);
-//		adView.setAdListener(new ToastAdListener(sfa));
-//		adView.loadAd(new AdRequest.Builder().build());
+		// adView.setAdListener(new ToastAdListener(sfa));
+		// adView.loadAd(new AdRequest.Builder().build());
 		AdRequest adRequest = new AdRequest.Builder()
-	    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-	    .addTestDevice("5E4CA696BEB736E734DD974DD296F11A")
-	    .build();
+				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+				.addTestDevice("5E4CA696BEB736E734DD974DD296F11A").build();
 		adView.loadAd(adRequest);
-		
+
 		// default no filter for videos
 
 		Intent intent = getIntent();
@@ -156,7 +158,8 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 
 		ab.setTitle(title);
 
-		feedManager = new FeedManager_Base();
+		feedManager = new FeedManager_Base_v3_PlaylistItem("video", recentAPI,
+				browserKey, gv, numOfResults);
 
 		Initializing();
 		// check whether there are more videos in the playlist
@@ -182,15 +185,14 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// Playlist activity
-				 Intent i = new Intent(mContext,
-				 YoutubeActionBarActivity.class);
-				 i.putExtra("video", videolist.get(position));
-				 i.putExtra("isfullscreen", true);
-				 i.putExtra("videoId", videolist.get(position).getVideoId());
-				 i.putExtra("playlistID", mPlaylistID);
-				 i.putParcelableArrayListExtra("videoList", videolist);
-				 i.putExtra("positionOfList", position);
-				 startActivity(i);
+				Intent i = new Intent(mContext, YoutubeActionBarActivity.class);
+				i.putExtra("video", videolist.get(position));
+//				i.putExtra("isfullscreen", true);
+				i.putExtra("videoId", videolist.get(position).getVideoId());
+				i.putExtra("playlistID", mPlaylistID);
+				i.putParcelableArrayListExtra("videoList", videolist);
+				i.putExtra("positionOfList", position);
+				startActivity(i);
 				// Intent intent =
 				// YouTubeStandalonePlayer.createPlaylistIntent(sfa
 				// , "AIzaSyAuEa3bIKbSYiXVWbHU_zueVzEBv9p2r_Y",
@@ -226,7 +228,8 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 		// }
 		boolean pauseOnScroll = false; // or true
 		boolean pauseOnFling = true; // or false
-		PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, pauseOnScroll, pauseOnFling);
+		PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader,
+				pauseOnScroll, pauseOnFling);
 		gv.setOnScrollListener(listener);
 		vaa = new VideoArrayAdapter(this, videolist, imageLoader);
 		// setListAdapter(vaa);
@@ -422,21 +425,36 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 	}
 
 	public void Initializing() {
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
+		final String[] catagory = { "Order: default", "Order: reversed",
+				"Order: shuffled" };
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+				ab.getThemedContext(), R.layout.sherlock_spinner_item,
+				android.R.id.text1, catagory);
+
+		adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		ab.setListNavigationCallbacks(adapter, this);
+
+		ab.setSelectedNavigationItem(currentPosition);
 	}
-    @Override
-	public void onPause() {
-    	if(adView != null)
-    		adView.pause();
-        super.onPause();
-    }
 
-    @Override
+	@Override
+	public void onPause() {
+		if (adView != null)
+			adView.pause();
+		super.onPause();
+	}
+
+	@Override
 	public void onResume() {
-        super.onResume();
-        if(adView != null)
-        	adView.resume();
-    }
+		super.onResume();
+		if (adView != null)
+			adView.resume();
+	}
+
 	@Override
 	public void onDestroy() {
 		// Destroy ads when the view is destroyed
@@ -444,16 +462,14 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 			adView.destroy();
 		}
 		// Log.d("UniversalImageLoader", "It's task root!");
-//		imageLoader.clearDiscCache();
+		// imageLoader.clearDiscCache();
 		imageLoader.clearMemoryCache();
 
 		// check the state of the task
 		cancelAllTask();
 		// hideAllViews();
-		
+
 		super.onDestroy();
-
-
 
 	}
 
@@ -479,7 +495,8 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 	// Clear fragment back stack
 	public void refreshActivity() {
 
-		redoRequest(recentAPI, new FeedManager_Base());
+		redoRequest(recentAPI, new FeedManager_Base_v3_PlaylistItem("video", recentAPI,
+				browserKey, gv, numOfResults));
 	}
 
 	public void redoRequest(String api, FeedManager_Base fb) {
@@ -512,6 +529,37 @@ public class LoadMore_Activity_Base extends SherlockActivity {
 			myLoadMoreListView.setVisibility(View.GONE);
 		if (mRetryView != null)
 			mRetryView.setVisibility(View.GONE);
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		if (firstTime) {
+			firstTime = false;
+			return true;
+		}
+		
+		if (videolist != null) {
+
+			if (itemPosition == 0) {
+				// Redo request to get its default order
+				String firstApi = API.get(0);
+				API.clear();
+				API.add(firstApi);
+				isMoreVideos = true;
+				titles.clear();
+				videolist.clear();
+				setListView();
+
+			} else if (itemPosition == 1) {
+				Collections.reverse(videolist);
+
+			} else if (itemPosition == 2) {
+				Collections.shuffle(videolist);
+
+			}
+			gv.invalidateViews();
+		}
+		return false;
 	}
 
 }

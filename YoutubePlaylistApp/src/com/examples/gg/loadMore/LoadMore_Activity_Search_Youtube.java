@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -86,6 +87,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 					+ "&type="
 					+ queryHash.get(catagory[mediaType]) + "&key=" + browserKey;
 
+			Log.d("debug", playlistAPI);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();

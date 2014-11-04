@@ -354,7 +354,10 @@ public class LoadMore_Base extends SherlockFragment implements
 				View retryView) {
 			super(type, contentView, loadingView, retryView);
 		}
-
+		public LoadMoreTask(int type, View contentView, View loadingView,
+				View retryView, String api) {
+			super(type, contentView, loadingView, retryView);
+		}
 		@Override
 		public void handleCancelView() {
 //			((LoadMoreListView) myLoadMoreListView).onLoadMoreComplete();
@@ -594,12 +597,19 @@ public class LoadMore_Base extends SherlockFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 		// TODO Auto-generated method stub
-		onQueryTextSubmit(suggestedKeywords.get(index));
+		// starting search activity
+		suggestedList.setVisibility(View.GONE);
+		hideSoftKeyboard(sfa);
+		Intent intent = new Intent(sfa, LoadMore_Activity_Search_Youtube.class);
+		intent.putExtra("query", suggestedKeywords.get(index));
+		startActivity(intent);
 	}
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		// starting search activity
+		suggestedList.setVisibility(View.GONE);
+		hideSoftKeyboard(sfa);
 		Intent intent = new Intent(sfa, LoadMore_Activity_Search_Youtube.class);
 		intent.putExtra("query", query);
 		startActivity(intent);

@@ -9,7 +9,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.examples.gg.feedManagers.FeedManager_Base_v3_playlistItem;
+import com.examples.gg.feedManagers.FeedManager_Base_v3_PlaylistItem;
 import com.rs.playlist2.R;
 
 public class PlaylistFragment extends LoadMore_Base {
@@ -36,7 +36,7 @@ public class PlaylistFragment extends LoadMore_Base {
 		API.add(cAPI);
 
 		// set a feed manager
-		feedManager = new FeedManager_Base_v3_playlistItem("video", cAPI,
+		feedManager = new FeedManager_Base_v3_PlaylistItem("video", cAPI,
 				browserKey, gv, numOfResults);
 
 		// Show menu

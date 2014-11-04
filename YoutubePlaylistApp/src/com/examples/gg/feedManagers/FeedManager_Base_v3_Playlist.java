@@ -8,14 +8,11 @@ import com.examples.gg.data.Video;
 
 import android.widget.GridView;
 
+public class FeedManager_Base_v3_Playlist extends FeedManager_Base_v3{
 
-
-public class FeedManager_Base_v3_playlistItem extends FeedManager_Base_v3{
-
-	public FeedManager_Base_v3_playlistItem(String mediaType, String api,
+	public FeedManager_Base_v3_Playlist(String mediaType, String api,
 			String browserKey, GridView gv, String numOfResults) {
 		super(mediaType, api, browserKey, gv, numOfResults);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -30,16 +27,19 @@ public class FeedManager_Base_v3_playlistItem extends FeedManager_Base_v3{
 			for (int i = 0; i < items.length(); i++) {
 				Video video = new Video();
 				// get a video in the playlist
+				JSONObject oneVideo = items.getJSONObject(i);
 				JSONObject snippet = items.getJSONObject(i).getJSONObject(
 						"snippet");
 				// get the title of this video
 				String videoTitle = snippet.getString("title");
 
-				String videoId = snippet.getJSONObject("resourceId").getString(
-						mediaType + "Id");
+				String videoId = "";
 				String author = "";
 				String videoDesc = "";
 				String thumbUrl = "";
+				if(!oneVideo.isNull("id")){
+					videoId = oneVideo.getString("id");
+				}
 				if (!snippet.isNull("channelTitle")) {
 					author = snippet.getString("channelTitle");
 				}
@@ -82,12 +82,9 @@ public class FeedManager_Base_v3_playlistItem extends FeedManager_Base_v3{
 				videos.add(video);
 				// System.out.println(videoTitle+"***"+videoLink);
 
-				if (i != items.length() - 1) {
-					ids += videoId + ",";
-
-				} else {
+				ids += videoId + ",";
+				if(i == items.length()-1)
 					ids += videoId;
-				}
 			}
 			doSecondTask();
 		} catch (Exception ex) {
@@ -96,5 +93,6 @@ public class FeedManager_Base_v3_playlistItem extends FeedManager_Base_v3{
 
 		return videos;
 	}
+
 
 }

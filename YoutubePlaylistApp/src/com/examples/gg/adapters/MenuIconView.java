@@ -27,7 +27,7 @@ public class MenuIconView extends ImageView implements OnClickListener{
 	protected VideoArrayAdapter.ViewHolder mViewholder;
 	protected Video mVideo;
 	
-	protected final String prefName = "Favorites";
+	protected String prefName = "Favorites";
 	
 	public MenuIconView(Context context) {
 		super(context);

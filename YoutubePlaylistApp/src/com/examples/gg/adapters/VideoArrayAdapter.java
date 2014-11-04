@@ -43,7 +43,7 @@ import com.rs.playlist2.R;
 
 public class VideoArrayAdapter extends ArrayAdapter<Video> {
 
-//	private final ArrayList<String> values;
+	// private final ArrayList<String> values;
 	protected ArrayList<Video> videos;
 	private LayoutInflater inflater;
 
@@ -55,11 +55,12 @@ public class VideoArrayAdapter extends ArrayAdapter<Video> {
 
 	protected ViewHolder holder;
 
-	public VideoArrayAdapter(Context context, ArrayList<Video> videos, ImageLoader imageLoader) {
+	public VideoArrayAdapter(Context context, ArrayList<Video> videos,
+			ImageLoader imageLoader) {
 		super(context, R.layout.videolist, videos);
 
 		this.mContext = context;
-//		this.values = values;
+		// this.values = values;
 		this.videos = videos;
 		this.imageLoader = imageLoader;
 		inflater = (LayoutInflater) context
@@ -106,8 +107,7 @@ public class VideoArrayAdapter extends ArrayAdapter<Video> {
 					.diskCache(new UnlimitedDiscCache(cacheDir))
 					.memoryCache(new LruMemoryCache(2 * 1024 * 1024))
 					.memoryCacheSize(2 * 1024 * 1024)
-					.memoryCacheSizePercentage(13)
-					.build();
+					.memoryCacheSizePercentage(13).build();
 			this.imageLoader.init(config);
 		}
 
@@ -115,10 +115,9 @@ public class VideoArrayAdapter extends ArrayAdapter<Video> {
 				.showImageOnLoading(R.drawable.imageholder3)
 				.showImageForEmptyUri(R.drawable.imageholder3)
 				.showImageOnFail(R.drawable.imageholder3).cacheInMemory(true)
-				.delayBeforeLoading(300)
-				.cacheOnDisk(true).resetViewBeforeLoading(false)
-				.considerExifParams(true).bitmapConfig(Bitmap.Config.RGB_565)
-				.build();
+				.delayBeforeLoading(300).cacheOnDisk(true)
+				.resetViewBeforeLoading(false).considerExifParams(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	@Override
@@ -157,12 +156,17 @@ public class VideoArrayAdapter extends ArrayAdapter<Video> {
 		holder.titleView.setText(videos.get(position).getTitle());
 		holder.authorView.setText(videos.get(position).getAuthor());
 
+		Video theVideo = videos.get(position);
 		// values for time and view counts should not be null
-		if (videos.get(position).isVideo) {
+		if (theVideo.isVideo) {
 
 			// For Youtube videos, showing update date and views
 			holder.countView.setText(videos.get(position).getUpdateTime()
 					+ " | " + videos.get(position).getViewCount());
+
+		} else if (theVideo.isPlaylist) {
+			holder.countView.setText(theVideo.getViewCount());
+
 		} else if (videos.get(position).isTwitch) {
 
 			// For Twitch, only showing number of viewers
