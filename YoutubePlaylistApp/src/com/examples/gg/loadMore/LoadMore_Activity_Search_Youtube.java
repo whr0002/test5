@@ -14,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+
+import com.actionbarsherlock.internal.widget.IcsAdapterView;
+import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.actionbarsherlock.widget.SearchView;
 import com.examples.gg.adapters.ListViewAdapter;
 import com.examples.gg.data.MyAsyncTask;
@@ -37,8 +40,8 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 	private ArrayList<String> suggestedKeywords;
 	private GetSuggestedWordsTask mTask;
 
-	private Spinner spin1;
-	private Spinner spin2;
+	private IcsSpinner spin1;
+	private IcsSpinner spin2;
 
 	private HashMap<String, String> queryHash;
 	private final String[] catagory = { "Videos", "Channels", "Playlists" };
@@ -156,15 +159,15 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		// ab.setDisplayUseLogoEnabled(false);
 		// ab.setDisplayShowHomeEnabled(false);
 
-		spin1 = (Spinner) findViewById(R.id.spinner1);
-		spin2 = (Spinner) findViewById(R.id.spinner2);
+		spin1 = (IcsSpinner) findViewById(R.id.spinner1);
+		spin2 = (IcsSpinner) findViewById(R.id.spinner2);
 
 		spin1.setAdapter(adapter);
 		spin2.setAdapter(adapter2);
 
-		spin1.setOnItemSelectedListener(new OnItemSelectedListener() {
+		spin1.setOnItemSelectedListener(new IcsAdapterView.OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
+			public void onItemSelected(IcsAdapterView<?> parent, View view,
 					int itemPosition, long id) {
 				if (firstTime) {
 					firstTime = false;
@@ -173,17 +176,37 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 				mediaType = itemPosition;
 				refreshActivity();
-
+				
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
+			public void onNothingSelected(IcsAdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 
-		spin2.setOnItemSelectedListener(new OnItemSelectedListener() {
+//		spin2.setOnItemSelectedListener(new OnItemSelectedListener() {
+//			@Override
+//			public void onItemSelected(AdapterView<?> arg0, View arg1,
+//					int itemPosition, long id) {
+//				if (spin2FirstTime) {
+//					spin2FirstTime = false;
+//					return;
+//				}
+//
+//				sortType = itemPosition;
+//				refreshActivity();
+//
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> arg0) {
+//			}
+//		});
+		spin2.setOnItemSelectedListener(new IcsAdapterView.OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
+			public void onItemSelected(IcsAdapterView<?> parent, View view,
 					int itemPosition, long id) {
 				if (spin2FirstTime) {
 					spin2FirstTime = false;
@@ -192,14 +215,15 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 				sortType = itemPosition;
 				refreshActivity();
-
+				
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
+			public void onNothingSelected(IcsAdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
-
 	}
 
 	@Override
@@ -317,7 +341,8 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 			mTask.execute(fullAPI);
 
 		} else {
-			suggestedList.setVisibility(View.GONE);
+			if(suggestedList != null)
+				suggestedList.setVisibility(View.GONE);
 		}
 
 		return true;

@@ -638,7 +638,8 @@ public class LoadMore_Base extends SherlockFragment implements
 			mTask.execute(fullAPI);
 
 		} else {
-			suggestedList.setVisibility(View.GONE);
+			if(suggestedList != null)
+				suggestedList.setVisibility(View.GONE);
 		}
 
 		return true;
