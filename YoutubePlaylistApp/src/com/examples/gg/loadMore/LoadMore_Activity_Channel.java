@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.examples.gg.data.Video;
 import com.examples.gg.feedManagers.FeedManager_Base_v3_Playlist;
 import com.examples.gg.feedManagers.FeedManager_Base_v3_PlaylistItem;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class LoadMore_Activity_Channel extends LoadMore_Activity_Base implements
 		OnNavigationListener {

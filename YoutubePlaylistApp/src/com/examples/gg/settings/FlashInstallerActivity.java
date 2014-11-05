@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class FlashInstallerActivity extends SherlockActivity {
 

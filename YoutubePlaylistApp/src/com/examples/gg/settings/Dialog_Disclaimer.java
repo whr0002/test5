@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class Dialog_Disclaimer extends DialogPreference{
 

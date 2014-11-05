@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
@@ -36,7 +35,7 @@ import com.google.android.youtube.player.YouTubePlayer.Provider;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class YoutubeActionBarActivity extends SherlockFragmentActivity
 		implements YouTubePlayer.OnInitializedListener {

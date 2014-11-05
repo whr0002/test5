@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class Dialog_Libraries extends DialogPreference {
 

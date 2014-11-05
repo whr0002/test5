@@ -4,7 +4,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.examples.gg.data.CustomSearchView;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class LoadMore_Activity_Search extends LoadMore_Activity_Base
 		implements SearchView.OnQueryTextListener {
@@ -28,10 +28,10 @@ public class LoadMore_Activity_Search extends LoadMore_Activity_Base
 						MenuItem.SHOW_AS_ACTION_IF_ROOM
 								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
-		menu.add(0, 0, 0, "Refresh")
-				.setIcon(R.drawable.ic_refresh)
-				.setShowAsAction(
-						MenuItem.SHOW_AS_ACTION_IF_ROOM);
+//		menu.add(0, 0, 0, "Refresh")
+//				.setIcon(R.drawable.ic_refresh)
+//				.setShowAsAction(
+//						MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 
 	}

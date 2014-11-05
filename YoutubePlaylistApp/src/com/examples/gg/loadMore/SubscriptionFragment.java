@@ -2,7 +2,6 @@ package com.examples.gg.loadMore;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import android.annotation.TargetApi;
 import android.content.SharedPreferences;
@@ -18,7 +17,7 @@ import com.examples.gg.data.Video;
 import com.examples.gg.feedManagers.FeedManager_Base_v3_PlaylistItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 //import com.examples.gg.twitchplayers.VideoBuffer;
 

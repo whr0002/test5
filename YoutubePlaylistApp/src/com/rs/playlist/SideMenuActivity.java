@@ -32,10 +32,8 @@ import com.examples.gg.data.SectionItem;
 import com.examples.gg.loadMore.FavoritesFragment;
 import com.examples.gg.loadMore.HistoryFragment;
 import com.examples.gg.loadMore.PlaylistFragment;
-import com.examples.gg.loadMore.SearchFragment;
 import com.examples.gg.loadMore.SubscriptionFragment;
 import com.examples.gg.settings.SettingsActivity;
-import com.rs.playlist2.R;
 
 public class SideMenuActivity extends SherlockFragmentActivity {
 
@@ -167,9 +165,9 @@ public class SideMenuActivity extends SherlockFragmentActivity {
 			selectItem(1);
 
 		}
-		// isFirstTimeUser();
+		isFirstTimeUser();
 //		openDrawerOnStart();
-		this.validatingTips(this);
+//		this.validatingTips(this);
 
 	}
 

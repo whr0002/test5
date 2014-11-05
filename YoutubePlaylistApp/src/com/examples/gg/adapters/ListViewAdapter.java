@@ -7,10 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class ListViewAdapter extends ArrayAdapter<String> {
 

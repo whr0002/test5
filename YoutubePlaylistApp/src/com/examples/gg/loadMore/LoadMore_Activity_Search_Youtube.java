@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,7 +19,7 @@ import com.examples.gg.adapters.ListViewAdapter;
 import com.examples.gg.data.MyAsyncTask;
 import com.examples.gg.feedManagers.FeedManager_Base_v3;
 import com.examples.gg.feedManagers.FeedManager_Suggestion;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		implements SearchView.OnQueryTextListener, ListView.OnItemClickListener {
@@ -42,11 +41,11 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 	private Spinner spin2;
 
 	private HashMap<String, String> queryHash;
-	private final String[] catagory = { "Playlists", "Videos", "Channels" };
+	private final String[] catagory = { "Videos", "Channels", "Playlists" };
 	private final String[] sort = { "Relevance", "Date", "Rating", "Title",
 			"View count", "Video count" };
 	private FeedManager_Suggestion mFeedManager;
-	
+
 	@Override
 	public void Initializing() {
 		// Give a title for the action bar
@@ -87,7 +86,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 					+ "&type="
 					+ queryHash.get(catagory[mediaType]) + "&key=" + browserKey;
 
-			Log.d("debug", playlistAPI);
+//			Log.d("debug", playlistAPI);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -106,7 +105,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 		hasHeader = false;
 
 		// set text in search field
-		queryHint = "Search";
+		queryHint = "Search Youtube";
 
 		// Default search type is 0 (Playlist)
 		// 2 (Channel)
@@ -230,9 +229,8 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				switch (mediaType) {
-
-				case 0:
+				String type = queryHash.get(catagory[mediaType]);
+				if (type.equals("playlist")) {
 					// Search Playlist, type 0
 					Intent i1 = new Intent(sfa, LoadMore_Activity_Base.class);
 					// Log.d("debug", videolist.get(position)
@@ -247,9 +245,8 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 					i1.putExtra("playlistID", videolist.get(position)
 							.getVideoId());
 					startActivity(i1);
-					break;
-
-				case 1:
+					
+				} else if (type.equals("video")) {
 					// Search videos, type 1
 					Intent i = new Intent(mContext,
 							YoutubeActionBarActivity.class);
@@ -257,9 +254,9 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 					i.putExtra("videoId", videolist.get(position).getVideoId());
 					// i.putExtra("isfullscreen", true);
 					startActivity(i);
-					break;
+					
+				} else if (type.equals("channel")) {
 
-				case 2:
 					// Search channels, type 2
 					nextFragmentAPI = videolist.get(position)
 							.getRecentVideoUrl();
@@ -273,7 +270,6 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 					i2.putExtra("title", title);
 					i2.putExtra("thumbnail", url);
 					startActivity(i2);
-					break;
 				}
 			}
 		});
@@ -326,7 +322,7 @@ public class LoadMore_Activity_Search_Youtube extends LoadMore_Activity_Search
 
 		return true;
 	}
-	
+
 	public class GetSuggestedWordsTask extends MyAsyncTask {
 
 		@Override

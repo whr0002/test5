@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.examples.gg.data.Video;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class MenuIconViewFavorites extends MenuIconView{
 

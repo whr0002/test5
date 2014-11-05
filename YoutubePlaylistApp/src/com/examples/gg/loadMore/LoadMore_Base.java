@@ -46,7 +46,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class LoadMore_Base extends SherlockFragment implements
 		ActionBar.OnNavigationListener, SearchView.OnQueryTextListener, ListView.OnItemClickListener{

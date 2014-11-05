@@ -42,7 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class LoadMore_Activity_Base extends SherlockActivity implements OnNavigationListener {
 	protected LoadMoreListView myLoadMoreListView;
@@ -279,8 +279,8 @@ public class LoadMore_Activity_Base extends SherlockActivity implements OnNaviga
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		menu.add(0, 0, 0, "").setIcon(R.drawable.ic_refresh)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+//		menu.add(0, 0, 0, "").setIcon(R.drawable.ic_refresh)
+//				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		return true;
 

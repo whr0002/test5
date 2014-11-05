@@ -3,7 +3,6 @@ package com.examples.gg.loadMore;
 import java.util.Collections;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -11,7 +10,7 @@ import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.examples.gg.feedManagers.FeedManager_Base_v3_PlaylistItem;
-import com.rs.playlist2.R;
+import com.rs.playlist.R;
 
 public class PlaylistFragment extends LoadMore_Base {
 
