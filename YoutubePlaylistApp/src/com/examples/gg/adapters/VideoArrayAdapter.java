@@ -161,7 +161,7 @@ public class VideoArrayAdapter extends ArrayAdapter<Video> {
 		if (theVideo.isVideo) {
 
 			// For Youtube videos, showing update date and views
-			holder.countView.setText(videos.get(position).getUpdateTime()
+			holder.countView.setText("   "+videos.get(position).getUpdateTime()
 					+ " | " + videos.get(position).getViewCount());
 
 		} else if (theVideo.isPlaylist) {
